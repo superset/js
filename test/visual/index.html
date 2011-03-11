@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Superset Visual Test Suite</title>
+	<link rel="stylesheet" href="../../styles/reset.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="../../styles/ui/deco.css" type="text/css" media="screen"/>
+	
+	<!--Page style  -->
+	<style>
+		.content {margin:20px}
+	</style>
+	
+    <script type="text/javascript" src="../../scripts/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="../../scripts/superset.core.js"></script>
+	
+	<script type="text/javascript">
+	
+		config('scriptPath', '../../scripts/');
+		config('scriptMin', false);
+		
+		using('superset.storage', 'superset.data', 'superset.ui', function() {
+		
+			$(document).ready(function() {
+				
+				var button1 = new fn.ui.Button();
+				
+				button1.click(function(e) {
+					
+					e.preventDefault();
+				});
+		
+				$('#fn-ui-button1, #fn-ui-button2').widget(button1);
+			});
+			
+		});
+	</script>
+
+</head>
+<body>
+<div class="content">
+	<a href='#' id="fn-ui-button1">Button1</a>
+</div>
+<div class="content">
+	<a href='#' id="fn-ui-button2">Button2</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Superset Visual Test - Data binding</title>
+	<link rel="stylesheet" href="../..//styles/reset.css" type="text/css" media="screen"/>
+	<link rel="stylesheet" href="../..//styles/ui/deco.css" type="text/css" media="screen"/>
+	
+	<!--Page style  -->
+	<style>
+		.content {margin:20px}
+		h2 {margin-top:20px}
+	</style>
+	
+    <script type="text/javascript" src="../../scripts/jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="../../scripts/superset.core.js"></script>
+	
+	<script type="text/javascript">
+		
+		config('scriptPath', '../../scripts/');
+		config('scriptMin', false);
+		
+		using('leaf.data', function() {
+		
+			$(document).ready(function()  {
+						
+				//-- Example 1 binddata
+				
+				var data = {title: 'test', content: 'lorem ipsum'};
+				var map = {title: 'p', content: 'p:eq(1)'}; 
+				
+				$('#example1').binddata(data, map);
+	
+				
+				//-- Example 2 bid complex data
+				
+				var data = {text: {title: 'test', content: 'lorem ipsum'}};
+				var map = {text: {title: 'p', content: 'p:eq(1)'}}; 
+				
+				$('#example2').binddata(data, map);
+				
+				
+				//-- Example 3 bindform
+				
+				data = {name: 'John', age: 27, post:'action.htm'};
+				map = {name: ['#txtName', 'value'], age: ['#txtAge', 'value'], post: ['', 'action']};
+				
+				$('#example3').binddata(data, map);
+				
+				
+				//-- Example 4 bindselect
+				
+				var templ = '<option value=""></option>';
+				data = [{id: 0, desc: 'male'}, {id: 1, desc: 'female'}];
+				map = {id: ['', 'value'], desc: ''};
+	
+				$('#example4 select').binddata(data, map, templ);
+	
+				
+				//-- Example 5 bindtable
+				
+				templ = '<tr><td></td><td></td><td></td></tr>';
+				data = [{id: 1, name: 'john', age:27}, {id: 2, name: 'bob', age:30}];
+				map = {id: 'td', name: 'td:eq(1)', age: 'td:eq(2)'};
+				
+				$('#example5 tbody').binddata(data, map, templ);
+				
+			})	
+		})
+	</script>
+
+</head>
+<body class="content">
+
+	<h2>Example 1</h2>
+	<div id="example1" class="">
+        <p id="title" style="font-weight:bold"></p>
+        <p id="content"></p>
+    </div>
+	
+	<h2>Example 2</h2>
+	<div id="example2">
+        <p id="title" style="font-weight:bold"></p>
+        <p id="content"></p>
+    </div>
+	
+	<h2>Example 3</h2>
+	<div id="example3">
+		
+		<form id="form1" action="">
+	        <label for="txtName" >Name</label><input type="text" id="txtName" /><br />
+	        <label for="txtAge">Age</label><input type="text" id="txtAge" /><br />
+	    </form>
+		
+	</div>
+	
+	<h2>Example 4</h2>
+	<div id="example4">
+
+	    <form id="form2" action="#">
+	        <label for="drpGender">Gender</label><select id="drpGender"></select>
+	    </form>
+
+	</div>
+	
+	<h2>Example 5</h2>
+	<div id="example5">
+		<table>
+			<thead>
+				<th>Id</th><th>Name</th><th>Age</th>
+			</thead>
+			<tbody>
+				<tr><td></td><td></td><td></td></tr>
+			</tbody>
+		</table>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+.fn-ui-widget {
+	font-family:helvetica,arial,freesans,clean,sans-serif;
+	font-size:12px;
+	font-weight:bold;
+}
+
+.fn-ui-button {
+	
+	display: inline-block;
+	border:1px solid #333;
+	min-width: 100px;
+	min-height:34px;
+	text-decoration:none;
+	color:#333
+}
+
+.fn-ui-button-over {
+	border: solid 1px #0f0;
+}
+
+.fn-ui-button-down {
+	border: solid 1px #f00;
+}
+
+
