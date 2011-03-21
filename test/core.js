@@ -191,6 +191,19 @@ test('fn.plugin', function() {
 	
 	$('body').unittest2({test: true});
 	ok(result, 'option merged');
+	
+	//Colorize test
+	fn.plugin('colorize', function(options) {
+		
+		this.defaults.color = '#fff';
+		this.merge(options);
+		
+		fn.plugin.each(function(colorize, i) {
+			$(this).css('background-color', colorize.options.color);
+		})
+	})
+	
+	$('p').colorize({color: '#c00'});
 })
 
 

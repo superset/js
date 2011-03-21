@@ -3,12 +3,10 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 // ==/ClosureCompiler==
 
-/* NOTE: Superset UI is currently unsupported and undocumented. It may change substantially. */
-
 /*
 * Superset Framework - superset.ui
 *
-* @requires jQuery, superset.core, superset.data
+* @requires jQuery, superset.core
 *
 * Copyright (c) James Westgate 2011
 *
@@ -17,9 +15,6 @@
 *   http://www.gnu.org/licenses/gpl.html
 *
 */
-
-
-using('superset.data');
 
 
 //-- jQuery UI widget plug-in
@@ -98,10 +93,10 @@ namespace('fn.ui', function(){
 	//-- Base Widget
 	this.Widget = fn.type(function() {
 		
-		var _name = 'widget';
-		var _startbehaviours = [];
-		var _endbehaviours = [];
-		var _events = [];
+		var name = 'widget';
+		var startbehaviours = [];
+		var endbehaviours = [];
+		var events = [];
 		
 		
 		this.init = function() {
@@ -110,7 +105,7 @@ namespace('fn.ui', function(){
 		
 		//Add an event to the list of events
 		this.addEvent = function(name, fn) {
-			_events.push({key: name, fn: fn});
+			events.push({key: name, fn: fn});
 		};
 		
 		//Add a start and end behaviour
@@ -120,26 +115,26 @@ namespace('fn.ui', function(){
 			css = css.toString();
 			
 			//Only add valid behaviour
-			if (validBehaviours.indexOf(start) > -1) _startbehaviours.push({key: start, css: css});
-			if (validBehaviours.indexOf(end) > -1) _endbehaviours.push({key: end, css: css});
+			if (validBehaviours.indexOf(start) > -1) startbehaviours.push({key: start, css: css});
+			if (validBehaviours.indexOf(end) > -1) endbehaviours.push({key: end, css: css});
 		};
 		
 		//Return all events that have been registered
 		this.events = function() {
 			if (arguments.length) fn.noArgumentsException();
-			return _events;
+			return events;
 		};
 		
 		//Return all behaviours that have been registered
 		this.behaviours = function() {
 			if (arguments.length) fn.noArgumentsException();
-			return {start: _startbehaviours, end: _endbehaviours};
+			return {start: startbehaviours, end: endbehaviours};
 		};
 		
 		//Stores the name of the widget to be use in css behaviours etc
 		this.name = function() {
-			if (arguments.length) _name = arguments[0];
-			return _name;
+			if (arguments.length) name = arguments[0];
+			return name;
 		};
 				
 		//Returns a string representation of the widget
