@@ -29,78 +29,96 @@ namespace(this.fn, function() {
     var elementTable = {};
     var output = [];
 
-    //Create an associative array from the elements and attributes
-    for (var i = elements.length - 1; i >= 0; i--) elementTable[elements[i]] = true;
+    //Create an associative array from the valid html elements
+    for (var i = elements.length - 1; i >= 0; i--) elementTable[elements[i]] = {open: 0, closed: 0};
+
     elements = null;
 
     //Main parsing function
     this.build = function (il) {
-        output = [];
-        parseIl(il, false, false);
+        
+		output = [];
+        parseIl(il, null);
         return output.join('');
     };
-
-    //Private functions
+	
+	//Private functions
+	function checkClose(key) {
+		
+		if (key == null) return;
+		
+		if (elementTable[key].open > elementTable[key].closed) {
+			output.push('>');
+			elementTable[key].closed ++;
+		}
+	}
+	
+	
     //Parse each element in the template IL recursively
-    function parseIl(il, inTag, inAttr) {
+    function parseIl(il, parent) {
         
-		var type = Object.prototype.toString.call(il);
-        var result = false;
-
-        if (type === '[object Array]') {
-            for (var i = 0, length = il.length; i < length; i++) {
-                parseIl(il[i]);
+        if (fn.isType(il, 'array')) {
+            
+			for (var i = 0, length = il.length; i < length; i++) {
+                parseIl(il[i], parent);
             }
         } 
-		else if (type === '[object Function]') {
-            parseIl(il());
+		else if (fn.isType(il, 'function')) {
+            parseIl(il(), parent);
 
         } 
-		else if (type === '[object Object]') {
-            for (var key in il) {
+		else if (fn.isType(il, 'object')) {
+            
+			for (var key in il) {
+				
+				var el = il[key];
+				
+                //Tag 
+                if (elementTable[key]) {
 
-                //Catch special case using text
-                if (key == 'text') {
-                    parseIl(il[key], true, false);
-                    result = true;
+                    //If we have an open tag close it
+                    checkClose(parent);
+
+                    output.push('<');
+                    output.push(key);
+					
+					elementTable[key].open ++;
+                    
+					parseIl(el, key);
+					
+					checkClose(key);
+					output.push('</');
+					output.push(key);
+					output.push('>');
+					
+					result = true;
                 }
+				//Attr
                 else {
-
-                    //Tag or an attribute
-                    if (elementTable[key]) {
-
-                        //If we have an open tag close it
-                        if (inTag) {
-                            output.push('>');
-                            result = true;
-                        }
-
-                        output.push('<');
-                        output.push(key);
-                        if (!parseIl(il[key], true, false)) output.push('>');
-                        output.push(['</', key, '>'].join(''));
-                    }
-                    else {
-                        output.push([' ', key, '="'].join(''));
-                        parseIl(il[key], false, true);
-                        output.push('"');
-                    }
+					if (key === 'text') {
+						parseIl(el, parent);
+					}
+					else {
+						output.push(' ');
+						output.push(key);
+						output.push('="');
+						
+						parseIl(el, null);
+						
+						output.push('"');
+					}
                 }
             };
 
         } 
 		else {
-            if (!inAttr && inTag) {
-                output.push('>');
-                result = true;
-            }
+            checkClose(parent);
 
             //Render text inside tag or attribute
             output.push(il);
         }
-
-        return result;
     }
+
 });
 
 

@@ -8,7 +8,7 @@ test('fn.build', function () {
     //Simple tag
     var il = { div: '' };
     var out = fn.build(il);
-    ok(out == '<div></div>', 'Simple Tag');
+    ok(out == '<div></div>', 'Simple Tag: ' + out);
 
     //Simple tag with attribute
     il = { div: { style: 'z-order: 0'} };
@@ -23,7 +23,7 @@ test('fn.build', function () {
     //Simple nested tag
     il = { div: { p: 'Hello world'} };
     out = fn.build(il);
-    ok(out == '<div><p>Hello world</p></div>', 'Simple nested tag: ' + out);;
+    ok(out == '<div><p>Hello world</p></div>', 'Simple nested tag: ' + out);
 
     //Simple nested tag with style
     il = { div: { p: { style: 'color: red', text: 'Hello world'}}};
@@ -34,6 +34,21 @@ test('fn.build', function () {
     il = { div: { style: 'z-order: 1', p: 'Hello world'} };
     out = fn.build(il);
     ok(out == '<div style="z-order: 1"><p>Hello world</p></div>', 'Complex nested Tag: ' + out);
+	
+	il = {
+		html: {
+			head: {
+				title: 'Test Page'
+			},
+			body: [
+				{p: 'Test1'},
+				{p: 'Test2'}
+			]
+		}
+	};
+	
+	out = fn.build(il);
+    ok(out == '<html><head><title>Test Page</title></head><body><p>Test1</p><p>Test2</p></body></html>', out);
 });
 
 

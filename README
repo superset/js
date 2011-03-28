@@ -1,7 +1,21 @@
 Welcome to the Superset Javascript Framework Git Repository
 -----------------------------------------------------------
 
-For more information visit http://supersetjs.org
+Superset adds the missing bits of the puzzle to the jQuery library, all wrapped up in a single download of wholesome goodness.
+If you need a simple lightweight solution for namespacing, script loading, class and plugin helpers, background workers, cross browser storage or a groovy templating and databinding solution then look no further than the Superset library.
+
+Dual licensed under the MIT and GPL licenses:
+*   http://www.opensource.org/licenses/mit-license.php
+*   http://www.gnu.org/licenses/gpl.html
+
+For API Documentation visit: 
+https://github.com/superset/js/wiki
+
+
+
+
+
+
 
 
 

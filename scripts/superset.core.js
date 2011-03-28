@@ -81,6 +81,13 @@ fn.namespace(this.fn, function() {
 		this.coreException('At least one argument was expected.');
 	};
 	
+	
+	//-- Type checking
+	this.isType = function(value, type) {
+		
+		return ('[object ' + type + ']' === Object.prototype.toString.call(value).toLowerCase());
+	}
+	
 		
 	//-- Script/ Module loading
 		
