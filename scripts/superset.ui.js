@@ -13,9 +13,19 @@
 * Dual licensed under the MIT and GPL licenses:
 *   http://www.opensource.org/licenses/mit-license.php
 *   http://www.gnu.org/licenses/gpl.html
-*
 */
 
+//-- Helper functions and prototypes
+
+if (!Array.indexOf) {
+	
+	Array.prototype.indexOf = function(obj, start) {
+    	for (var i = (start || 0), len = this.length; i < len; i++) {
+			if (this[i] == obj) return i;
+    	}
+    	return -1;
+  	}
+}
 
 //-- jQuery UI widget plug-in
 
@@ -29,6 +39,11 @@ plugin('widget', function(widget, options){
 	//Add the underlying base css class (-widget) and current class
 	self.addClass(widget.baseName());
 	self.addClass(widget.className());
+	
+	//Add any templates
+	
+	
+	
 		
 	//Add classes for each event behaviour
 	var behaviours = widget.behaviours().start;
@@ -97,7 +112,7 @@ namespace('fn.ui', function(){
 		var startbehaviours = [];
 		var endbehaviours = [];
 		var events = [];
-		
+		var template = null;
 		
 		this.init = function() {
 			
@@ -131,10 +146,16 @@ namespace('fn.ui', function(){
 			return {start: startbehaviours, end: endbehaviours};
 		};
 		
-		//Stores the name of the widget to be use in css behaviours etc
+		//Stores the name of the widget to be used in css behaviours etc
 		this.name = function() {
 			if (arguments.length) name = arguments[0];
 			return name;
+		};
+		
+		//Returns the template used to add markup inside the widget
+		this.template = function() {
+			if (arguments.length) template = arguments[0];
+			return template;
 		};
 				
 		//Returns a string representation of the widget
@@ -160,6 +181,7 @@ namespace('fn.ui', function(){
 	//-- Button Widget
 	this.Button = fn.type(this.Widget, function() {
 		fn.ui.Widget.call(this);
+		
 		this.name('button');
 		
 		//Setup behaviours
@@ -167,7 +189,7 @@ namespace('fn.ui', function(){
 		this.onclick = this.addBehaviour('mousedown', 'mouseup', this.className('down'));
 		
 		//Setup events
-		this.click = this.addEvent.partial('click', undefined);		
+		this.click = this.addEvent.partial('click', undefined);
 	});
 });
 

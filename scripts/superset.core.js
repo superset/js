@@ -14,19 +14,6 @@
 *
 */
 
-//-- Helper functions and prototypes
-
-if (!Array.indexOf) {
-	
-	Array.prototype.indexOf = function(obj, start) {
-    	for (var i = (start || 0), len = this.length; i < len; i++) {
-			if (this[i] == obj) return i;
-    	}
-    	return -1;
-  	}
-}
-
-
 //-- Namespace bootstrap
 
 (function() {
@@ -84,7 +71,7 @@ fn.namespace(this.fn, function() {
 	
 	//-- Type checking
 	this.isType = function(value, type) {
-		
+		if (value === null) return false;
 		return ('[object ' + type + ']' === Object.prototype.toString.call(value).toLowerCase());
 	}
 	
@@ -112,12 +99,12 @@ fn.namespace(this.fn, function() {
 		var regext = /.js$/;
 		
 		//Loop through arguments
-		for (var i = 0, len = arguments.length; i < len; i++) {
+		for (var i=0, len=arguments.length; i<len; i++) {
 		
 			var arg = arguments[i];
 			
 			//Load args up to the callback, rest ignored
-			if ($.isFunction(arg)) {
+			if (fn.isType(arg, 'function')) {
 				callback = arg;
 				scripts = i;
 				break;
@@ -137,54 +124,56 @@ fn.namespace(this.fn, function() {
 			script.async = true;
 						
 			//Set source. Add preconfigured extension if required
-			script.src = [scriptFolder, '/',  arg, (/.js$/.test(scriptPath)) ? '' : scriptExt].join('');
+			script.src = [scriptFolder, '/',  arg, (regext.test(scriptPath)) ? '' : scriptExt].join('');
 			head.appendChild(script);
 		}
 	};
 	
 	
-    //-- Object functions
-    
-    //Class
+    //-- Object / type functions
+
+	//Based on Crockford's classless prototypal inheritance and
+	//http://www.barelyfitz.com/blog/archives/2006/03/07/230/	
+	window.create = this.create = function(o, c) {
+		function F() {}
+        F.prototype = o;
+        var f = new F();
+		if (c) for (var n in c) f[n] = c[n]; 
+ 		return f;
+	}
+	
+	//Type definition
+	//http://www.ruzee.com/blog/2008/12/javascript-inheritance-via-prototypes-and-closures
 	window.type = this.type = function() {
 		
-		//No inheritance
-		if (arguments.length == 1) return arguments[0];
+		//Define constructor and call init if available
+		var f = function() {
+			if (this.init) this.init.apply(this, arguments);
+		};
 		
-		//Utility function for inheritance
-		var inherit = function(base, subclass) {
+		var proto, len = arguments.length;
+		
+		//Define prototype
+		//Last argument is always assumed to define prototype
+		if (len) {
 			
-			(function(capture) {
-				subclass.prototype = capture;
-				subclass.prototype.constructor = subclass;
-				subclass.prototype.base = capture;
-			})(base);
+			var arg;
+			for (var i=0; i < len-1; i++) {
+				arg = arguments[i];				
+				proto = (proto) ? fn.create(proto, new arg()) : new arg();
+			}
 			
-			return subclass;
+			//Set prototype
+			if (proto) {
+				f.prototype = proto;
+				f.prototype.constructor = f;
+			}
+			
+			arguments[len-1].apply(f.prototype);
 		}
 		
-		//Single inheritance
-		if (arguments.length == 2) return inherit(new arguments[0], arguments[1]);
-		
-		//Multiple inheritance - list types
-		var types = []; //List of instanciated prototypes
-		for (var i=0, len = arguments.length - 2; i < len; i++) {
-		
-			var proto = new arguments[i];
-			if (types.indexOf(proto) === -1) types.push(proto);	
-		}
-		
-		//Create prototype from types
-		var i = types.length-1;
-		var fn = types[i]; 
-		while (i--) {
-			fn = inherit(fn, types[i]);
-		}
-		
-		//Return type
-		return inherit(fn, arguments[arguments.length -1]);
+		return f;
 	};
-	
 });
 
 

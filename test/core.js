@@ -25,26 +25,27 @@ test('fn.namespace', function () {
 	
 });
 
-test('fn.type', function(name) {
+test('fn.type', function() {
 	
-	var Person = fn.type(function(name){
-		this.name = name;
+	var Person = fn.type(function() {
+		this.name = '';
+		this.init = function(name) {
+			this.name = name;
+		}
 	});
 	
-	var Employee = fn.type(Person, function(name){
-		Person.call(this, name);
+	var Employee = fn.type(Person, function(){
 		this.salary = 123;
 		this.getBonus = function() {
 			return 500;
-		};
+		}
 	});
 	
-	var Director = fn.type(Employee, function(name){
-		Employee.call(this, name);
+	var Director = fn.type(Employee, function() {
 		this.options = 1000;
 		this.getBonus = function() {
-			return this.base.getBonus() * 10;
-		};
+			return Employee.prototype.getBonus() * 10;
+		}
 	});
 	
 	
@@ -73,15 +74,13 @@ test('fn.type', function(name) {
 	ok(person.name == 'John', 'director is called James');
 	
 	//Test overrides
-	ok(person.base == null, 'person has null base');
-	ok(employee.base != null, 'employee has a base');
-	ok(director.base != null, 'director has a base');
 	ok(typeof person.getBonus == 'undefined', 'person bonus is undefined');
 	ok(employee.getBonus() == 500, 'employee bonus is 500.00');
 	ok(director.getBonus() == 5000, 'director bonus is 5000.00');
-	ok(director.base.getBonus() == 500, 'director original bonus is 500.00');
+	ok(Employee.prototype.getBonus.call(director) == 500, 'director original bonus is 500.00');
 
 	
+	//Test multiple inheritance
 	var Car = fn.type(function() {
 		this.speed = 120;
 		this.price = 19999;
@@ -113,8 +112,6 @@ test('fn.type', function(name) {
 		this.fail = true;
 	})
 	
-	
-	//Test multiple inheritance
 	var tesla = new Electric();
 	var ferrari = new Petrol();
 	var prius = new Hybrid();
